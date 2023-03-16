@@ -1,9 +1,9 @@
 name: Rust
 
 on:
-  # NB: this differs from the book's project!
-  # These settings allow us to run this specific CI pipeline for PRs against
-  # this specific branch (a.k.a. book chapter).
+  # NB: 책의 프로젝트와 다릅니다!
+  # 이 설정은 특정 브랜치(a.k.a 책의각 챕터)의 PR에 대한 지정된 CI 파이프라인을
+  # 실행하게 되어 있습니다.
   push:
     branches:
       - root-chapter-05
