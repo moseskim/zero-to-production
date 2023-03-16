@@ -6,7 +6,7 @@ use zero2prod::configuration::{get_configuration, DatabaseSettings};
 use zero2prod::startup::{get_connection_pool, Application};
 use zero2prod::telemetry::{get_subscriber, init_subscriber};
 
-// Ensure that the `tracing` stack is only initialised once using `once_cell`
+// `tracing` 스택은 `once_cell`을 사용해서 한번만 초기화되어야 한다
 static TRACING: Lazy<()> = Lazy::new(|| {
     let default_filter_level = "info".to_string();
     let subscriber_name = "test".to_string();
@@ -26,7 +26,7 @@ pub struct TestApp {
     pub email_server: MockServer,
 }
 
-/// Confirmation links embedded in the request to the email API.
+///확인 링크는 이메일 API에 대한 요청에 내장되어 있다.
 pub struct ConfirmationLinks {
     pub html: reqwest::Url,
     pub plain_text: reqwest::Url,
@@ -52,11 +52,11 @@ impl TestApp {
             .expect("Failed to execute request.")
     }
 
-    /// Extract the confirmation links embedded in the request to the email API.
+    /// 이메일 API에 대한 요청에 내장되어 있는 확인 링크를 추출한다.
     pub fn get_confirmation_links(&self, email_request: &wiremock::Request) -> ConfirmationLinks {
         let body: serde_json::Value = serde_json::from_slice(&email_request.body).unwrap();
 
-        // Extract the link from one of the request fields.
+        // 요청 필드들 중 하나에서 링크를 추출한다.
         let get_link = |s: &str| {
             let links: Vec<_> = linkify::LinkFinder::new()
                 .links(s)
@@ -65,7 +65,7 @@ impl TestApp {
             assert_eq!(links.len(), 1);
             let raw_link = links[0].as_str().to_owned();
             let mut confirmation_link = reqwest::Url::parse(&raw_link).unwrap();
-            // Let's make sure we don't call random APIs on the web
+            // 웹에서 무작위 API를 호출하지 않았음을 보장한다
             assert_eq!(confirmation_link.host_str().unwrap(), "127.0.0.1");
             confirmation_link.set_port(Some(self.port)).unwrap();
             confirmation_link
@@ -80,25 +80,25 @@ impl TestApp {
 pub async fn spawn_app() -> TestApp {
     Lazy::force(&TRACING);
 
-    // Launch a mock server to stand in for Postmark's API
+    // Postmark API를 대신하기 위한 mock 서버를 기동한다
     let email_server = MockServer::start().await;
 
-    // Randomise configuration to ensure test isolation
+    // 구성을 무작위화 해서 테스트 격리를 보장한다
     let configuration = {
         let mut c = get_configuration().expect("Failed to read configuration.");
-        // Use a different database for each test case
+        // 각 테스트 케이스에 대해 서로 다른 데이터베이스를 사용한다
         c.database.database_name = Uuid::new_v4().to_string();
-        // Use a random OS port
+        // 무작위 OS 포트를 사용한다
         c.application.port = 0;
-        // Use the mock server as email API
+        // mock 서버를 이메일 API로서 사용한다
         c.email_client.base_url = email_server.uri();
         c
     };
 
-    // Create and migrate the database
+    // 데이터베이스를 생성하고 마이그레이션 한다
     configure_database(&configuration.database).await;
 
-    // Launch the application as a background task
+    // 백그라운드 태스크로 애플리케이션을 기동한다
     let application = Application::build(configuration.clone())
         .await
         .expect("Failed to build application.");
@@ -114,7 +114,7 @@ pub async fn spawn_app() -> TestApp {
 }
 
 async fn configure_database(config: &DatabaseSettings) -> PgPool {
-    // Create database
+    // 데이터베이스를 생성한다
     let mut connection = PgConnection::connect_with(&config.without_db())
         .await
         .expect("Failed to connect to Postgres");
@@ -123,7 +123,7 @@ async fn configure_database(config: &DatabaseSettings) -> PgPool {
         .await
         .expect("Failed to create database.");
 
-    // Migrate database
+    // 데이터베이스를 마이그레이션 한다
     let connection_pool = PgPool::connect_with(config.with_db())
         .await
         .expect("Failed to connect to Postgres.");
