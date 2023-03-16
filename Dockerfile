@@ -4,23 +4,23 @@ RUN apt update && apt install lld clang -y
 
 FROM chef as planner
 COPY . .
-# Compute a lock-like file for our project
+# 프로젝트에 대한 lock-유사 파일을 계산한다
 RUN cargo chef prepare  --recipe-path recipe.json
 
 FROM chef as builder
 COPY --from=planner /app/recipe.json recipe.json
-# Build our project dependencies, not our application!
+# 애플리케이션이 아닌 프로젝트 디펜던시를 빌드한다!
 RUN cargo chef cook --release --recipe-path recipe.json
 COPY . .
 ENV SQLX_OFFLINE true
-# Build our project
+# 프로젝트를 빌드한다
 RUN cargo build --release --bin zero2prod
 
 FROM debian:bullseye-slim AS runtime
 WORKDIR /app
 RUN apt-get update -y \
     && apt-get install -y --no-install-recommends openssl ca-certificates \
-    # Clean up
+    # 클린 업
     && apt-get autoremove -y \
     && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/*
