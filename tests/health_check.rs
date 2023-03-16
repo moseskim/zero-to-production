@@ -11,7 +11,7 @@ pub struct TestApp {
 
 async fn spawn_app() -> TestApp {
     let listener = TcpListener::bind("127.0.0.1:0").expect("Failed to bind random port");
-    // We retrieve the port assigned to us by the OS
+    // OS가 할당한 포트를 꺼내 온다
     let port = listener.local_addr().unwrap().port();
     let address = format!("http://127.0.0.1:{}", port);
 
@@ -28,7 +28,7 @@ async fn spawn_app() -> TestApp {
 }
 
 pub async fn configure_database(config: &DatabaseSettings) -> PgPool {
-    // Create database
+    // 데이터베이스를 생성한다
     let mut connection = PgConnection::connect(&config.connection_string_without_db())
         .await
         .expect("Failed to connect to Postgres");
@@ -37,7 +37,7 @@ pub async fn configure_database(config: &DatabaseSettings) -> PgPool {
         .await
         .expect("Failed to create database.");
 
-    // Migrate database
+    // 데이터베이스를 마이그레이션한다
     let connection_pool = PgPool::connect(&config.connection_string())
         .await
         .expect("Failed to connect to Postgres.");
@@ -57,7 +57,7 @@ async fn health_check_works() {
 
     // Act
     let response = client
-        // Use the returned application address
+        // 반환된 애플리케이션 주소를 사용한다
         .get(&format!("{}/health_check", &app.address))
         .send()
         .await
@@ -121,7 +121,7 @@ async fn subscribe_returns_a_400_when_data_is_missing() {
         assert_eq!(
             400,
             response.status().as_u16(),
-            // Additional customised error message on test failure
+            // 테스트 실패에 대해 추가 커스터마이즈 한 에러 메시지
             "The API did not fail with 400 Bad Request when the payload was {}.",
             error_message
         );

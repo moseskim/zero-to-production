@@ -15,28 +15,28 @@ if ! [ -x "$(command -v sqlx)" ]; then
   exit 1
 fi
 
-# Check if a custom user has been set, otherwise default to 'postgres'
+# 커스텀 사용자가 설정되어 있는지 확인한다. 설정되어 있지 않으면 'postgres'로 설정한다
 DB_USER="${POSTGRES_USER:=postgres}"
-# Check if a custom password has been set, otherwise default to 'password'
+# 커스텀 비밀번호가 설정되어 있는지 확인한다. 설정되어 있지 않으면 'password'로 설정한다.
 DB_PASSWORD="${POSTGRES_PASSWORD:=password}"
-# Check if a custom database name has been set, otherwise default to 'newsletter'
+# 커스텀 데이터베이스 이름이 설정되어 있는지 확인한다. 설정되어 있지 않으면 'newsletter'로 설정한다.
 DB_NAME="${POSTGRES_DB:=newsletter}"
-# Check if a custom port has been set, otherwise default to '5432'
+# 커스텀 포트가 설정되어 있는지 확인한다. 설정되어 있지 않으면 '5432'로 설정한다.
 DB_PORT="${POSTGRES_PORT:=5432}"
-# Check if a custom host has been set, otherwise default to 'localhost'
+# 커스텀 호스트가 설정되어 있는지 확인한다. 설정되어 있지 않으면 'localhost'로 설정한다.
 DB_HOST="${POSTGRES_HOST:=localhost}"
 
-# Allow to skip Docker if a dockerized Postgres database is already running
+# 도커화 된 Postgres 데이터베이스가 이미 실행되고 있다면 도커를 스킵한다.
 if [[ -z "${SKIP_DOCKER}" ]]
 then
-  # if a postgres container is running, print instructions to kill it and exit
+  # postgres 컨테이너가 실행 중이라면, 이를 중지시키는 명령얼 출력하고 종료한다.
   RUNNING_POSTGRES_CONTAINER=$(docker ps --filter 'name=postgres' --format '{{.ID}}')
   if [[ -n $RUNNING_POSTGRES_CONTAINER ]]; then
     echo >&2 "there is a postgres container already running, kill it with"
     echo >&2 "    docker kill ${RUNNING_POSTGRES_CONTAINER}"
     exit 1
   fi
-  # Launch postgres using Docker
+  # 도커를 사용해서 postgres를 기동한다.
   docker run \
       -e POSTGRES_USER=${DB_USER} \
       -e POSTGRES_PASSWORD=${DB_PASSWORD} \
@@ -45,10 +45,10 @@ then
       -d \
       --name "postgres_$(date '+%s')" \
       postgres -N 1000
-      # ^ Increased maximum number of connections for testing purposes
+      # ^ 테스팅 목적으로 최대 커넥션 수를 증가시킨다.
 fi
 
-# Keep pinging Postgres until it's ready to accept commands
+# Postgres가 명령어를 받을 수 있을 때까지 계속 확인(ping)한다
 until PGPASSWORD="${DB_PASSWORD}" psql -h "${DB_HOST}" -U "${DB_USER}" -p "${DB_PORT}" -d "postgres" -c '\q'; do
   >&2 echo "Postgres is still unavailable - sleeping"
   sleep 1
