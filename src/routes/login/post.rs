@@ -20,7 +20,7 @@ pub struct FormData {
     skip(form, pool, secret),
     fields(username=tracing::field::Empty, user_id=tracing::field::Empty)
 )]
-// We are now injecting `PgPool` to retrieve stored credentials from the database
+// `PgPool`을 주입해서 데이터베이스로부터 저장된 크리덴셜을 꺼낸다
 pub async fn login(
     form: web::Form<FormData>,
     pool: web::Data<PgPool>,

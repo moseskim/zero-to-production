@@ -4,34 +4,32 @@ use unicode_segmentation::UnicodeSegmentation;
 pub struct SubscriberName(String);
 
 impl SubscriberName {
-    /// Returns an instance of `SubscriberName` if the input satisfies all
-    /// our validation constraints on subscriber names.
-    /// It panics otherwise.
-    pub fn parse(s: String) -> Result<SubscriberName, String> {
-        // `.trim()` returns a view over the input `s` without trailing
-        // whitespace-like characters.
-        // `.is_empty` checks if the view contains any character.
-        let is_empty_or_whitespace = s.trim().is_empty();
+  /// 입력이 구독자 이름에 관한 모든 검증 제약을 만족하면
+  /// `SubcriberName` 인스턴스를 반환한다.
+  /// 그렇지 않으면 패닉에 빠진다.
+  pub fn parse(s: String) -> Result<SubscriberName, String> {
+    // `.trim()` 입력 `s`(뒤에 이어지는 화이트 스페이스 등의 문가자 제거된)에
+    // 대한 뷰를 반환한다.
+    // `.is_empty`는 해당 뷰가 문자를 포함하는지 확인한다.
+    let is_empty_or_whitespace = s.trim().is_empty();
 
-        // A grapheme is defined by the Unicode standard as a "user-perceived"
-        // character: `å` is a single grapheme, but it is composed of two characters
-        // (`a` and `̊`).
-        //
-        // `graphemes` returns an iterator over the graphemes in the input `s`.
-        // `true` specifies that we want to use the extended grapheme definition set,
-        // the recommended one.
-        let is_too_long = s.graphemes(true).count() > 256;
+    // 자소(grapheme)는 "사용자가 인지할 수 있는 문자"로서 유니코드 표준에 따라
+    // 정의된다. `å`는 하나의 자소이지만, 2개의 문자(`a`와 `̊`)로 구성되어 있다.
+    //
+    // `graphemes`는 입력 `s`안의 자소들에 대한 이터레이터를 반환한다.
+    // `true`는 우리가 확장된 자소 정의 셋(권장되는)을 사용하기 원한다는 것을
+    // 지정한다.
+    let is_too_long = s.graphemes(true).count() > 256;
 
-        // Iterate over all characters in the input `s` to check if any of them matches
-        // one of the characters in the forbidden array.
-        let forbidden_characters = ['/', '(', ')', '"', '<', '>', '\\', '{', '}'];
-        let contains_forbidden_characters = s.chars().any(|g| forbidden_characters.contains(&g));
+    // 입력 `s` 안의 모든 문자들에 대해 반복하면서 금지된 배열 안의 문자와 일치하는지
+    // 확인한다.
+    let forbidden_characters = ['/', '(', ')', '"', '<', '>', '\\', '{', '}'];
+    let contains_forbidden_characters = s.chars().any(|g| forbidden_characters.contains(&g));
 
-        if is_empty_or_whitespace || is_too_long || contains_forbidden_characters {
-            Err(format!("{} is not a valid subscriber name.", s))
-        } else {
-            Ok(Self(s))
-        }
+    if is_empty_or_whitespace || is_too_long || contains_forbidden_characters {
+        Err(format!("{} is not a valid subscriber name.", s))
+    } else {
+        Ok(Self(s))
     }
 }
 

@@ -61,8 +61,8 @@ async fn newsletters_are_not_delivered_to_unconfirmed_subscribers() {
 
     // Assert
     assert_eq!(response.status().as_u16(), 200);
-    // Mock verifies on Drop that we haven't sent the newsletter email
-}
+    // Mock은 드롭 시 뉴스레터 이메일을 보내지 않았음을 검증한다
+  }
 
 #[tokio::test]
 async fn newsletters_are_delivered_to_confirmed_subscribers() {
@@ -89,8 +89,8 @@ async fn newsletters_are_delivered_to_confirmed_subscribers() {
 
     // Assert
     assert_eq!(response.status().as_u16(), 200);
-    // Mock verifies on Drop that we have sent the newsletter email
-}
+    // Mock은 드롭 시 뉴스레터 이메일을 보냈음을 검증한다
+  }
 
 #[tokio::test]
 async fn newsletters_returns_400_for_invalid_data() {
@@ -121,7 +121,7 @@ async fn newsletters_returns_400_for_invalid_data() {
         assert_eq!(
             400,
             response.status().as_u16(),
-            // Additional customised error message on test failure
+            // 테스트 실패에 대한 추가 커스터마이즈 에러 메시지
             "The API did not fail with 400 Bad Request when the payload was {}.",
             error_message
         );
@@ -158,7 +158,7 @@ async fn requests_missing_authorization_are_rejected() {
 async fn non_existing_user_is_rejected() {
     // Arrange
     let app = spawn_app().await;
-    // Random credentials
+    // 무작위 크리덴셜
     let username = Uuid::new_v4().to_string();
     let password = Uuid::new_v4().to_string();
 
@@ -189,7 +189,7 @@ async fn invalid_password_is_rejected() {
     // Arrange
     let app = spawn_app().await;
     let username = &app.test_user.username;
-    // Random password
+    // 무작위 비밀번호
     let password = Uuid::new_v4().to_string();
     assert_ne!(app.test_user.password, password);
 
