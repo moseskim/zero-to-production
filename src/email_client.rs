@@ -170,7 +170,7 @@ mod tests {
         let email_client = email_client(mock_server.uri());
 
         Mock::given(any())
-            // 더이상 200을 반환하지 않는다!
+            // 더이상 200을 사용하지 않는다!
             .respond_with(ResponseTemplate::new(500))
             .expect(1)
             .mount(&mock_server)
