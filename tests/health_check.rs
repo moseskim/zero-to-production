@@ -3,11 +3,11 @@ use zero2prod::run;
 
 fn spawn_app() -> String {
     let listener = TcpListener::bind("127.0.0.1:0").expect("Failed to bind random port");
-    // We retrieve the port assigned to us by the OS
+    // OS가 할당한 포트 번호를 가져 온다
     let port = listener.local_addr().unwrap().port();
     let server = run(listener).expect("Failed to bind address");
     let _ = tokio::spawn(server);
-    // We return the application address to the caller!
+    // 호출자에게 애플리케이션 주소를 반환한다!
     format!("http://127.0.0.1:{}", port)
 }
 
@@ -19,7 +19,7 @@ async fn health_check_works() {
 
     // Act
     let response = client
-        // Use the returned application address
+        // 반환된 애플리케이션 주소를 사용한다
         .get(&format!("{}/health_check", &address))
         .send()
         .await
