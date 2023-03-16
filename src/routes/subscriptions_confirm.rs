@@ -15,7 +15,7 @@ pub async fn confirm(parameters: web::Query<Parameters>, pool: web::Data<PgPool>
         Err(_) => return HttpResponse::InternalServerError().finish(),
     };
     match id {
-        // Non-existing token!
+        // 존재하지 않는 토큰!
         None => HttpResponse::Unauthorized().finish(),
         Some(subscriber_id) => {
             if confirm_subscriber(&pool, subscriber_id).await.is_err() {
