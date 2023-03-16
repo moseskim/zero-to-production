@@ -54,8 +54,8 @@ pub fn get_configuration() -> Result<Settings, config::ConfigError> {
     let base_path = std::env::current_dir().expect("Failed to determine the current directory");
     let configuration_directory = base_path.join("configuration");
 
-    // Detect the running environment.
-    // Default to `local` if unspecified.
+    // 실행 환경을 식별한다.
+    // 지정되지 않았다면 `local`로 설정한다.
     let environment: Environment = std::env::var("APP_ENVIRONMENT")
         .unwrap_or_else(|_| "local".into())
         .try_into()
@@ -68,8 +68,8 @@ pub fn get_configuration() -> Result<Settings, config::ConfigError> {
         .add_source(config::File::from(
             configuration_directory.join(environment_filename),
         ))
-        // Add in settings from environment variables (with a prefix of APP and '__' as separator)
-        // E.g. `APP_APPLICATION__PORT=5001 would set `Settings.application.port`
+        // 환경 변수로부터 in settings를 추가한다(접두사로 `APP`을 붙이고, 구분자로 `__`를 붙인다).
+        // 예: `APP_APPLICATION__PORT=5001`은 `Settings.application.port`를 설정한다
         .add_source(
             config::Environment::with_prefix("APP")
                 .prefix_separator("_")
@@ -80,7 +80,7 @@ pub fn get_configuration() -> Result<Settings, config::ConfigError> {
     settings.try_deserialize::<Settings>()
 }
 
-/// The possible runtime environment for our application.
+/// 애플리케이션이 사용할 수 있는 실행 환경
 pub enum Environment {
     Local,
     Production,
