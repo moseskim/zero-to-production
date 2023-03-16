@@ -39,14 +39,14 @@ async fn new_password_fields_must_match() {
     let new_password = Uuid::new_v4().to_string();
     let another_new_password = Uuid::new_v4().to_string();
 
-    // Act - Part 1 - Login
+    // Act - Part 1 - 로그인한다
     app.post_login(&serde_json::json!({
         "username": &app.test_user.username,
         "password": &app.test_user.password
     }))
     .await;
 
-    // Act - Part 2 - Try to change password
+    // Act - Part 2 - 비밀번호 변경을 시도한다
     let response = app
         .post_change_password(&serde_json::json!({
             "current_password": &app.test_user.password,
@@ -56,7 +56,7 @@ async fn new_password_fields_must_match() {
         .await;
     assert_is_redirect_to(&response, "/admin/password");
 
-    // Act - Part 3 - Follow the redirect
+    // Act - Part 3 - 리다이렉트를 따른다
     let html_page = app.get_change_password_html().await;
     assert!(html_page.contains(
         "<p><i>You entered two different new passwords - \
@@ -71,14 +71,14 @@ async fn current_password_must_be_valid() {
     let new_password = Uuid::new_v4().to_string();
     let wrong_password = Uuid::new_v4().to_string();
 
-    // Act - Part 1 - Login
+    // Act - Part 1 - 로그인한다
     app.post_login(&serde_json::json!({
         "username": &app.test_user.username,
         "password": &app.test_user.password
     }))
     .await;
 
-    // Act - Part 2 - Try to change password
+    // Act - Part 2 - 비밀번호 변경을 시도한다
     let response = app
         .post_change_password(&serde_json::json!({
             "current_password": &wrong_password,
@@ -90,7 +90,7 @@ async fn current_password_must_be_valid() {
     // Assert
     assert_is_redirect_to(&response, "/admin/password");
 
-    // Act - Part 3 - Follow the redirect
+    // Act - Part 3 - 리다이렉트를 따른다
     let html_page = app.get_change_password_html().await;
     assert!(html_page.contains("<p><i>The current password is incorrect.</i></p>"));
 }
@@ -101,7 +101,7 @@ async fn changing_password_works() {
     let app = spawn_app().await;
     let new_password = Uuid::new_v4().to_string();
 
-    // Act - Part 1 - Login
+    // Act - Part 1 - 로그인한다
     let login_body = serde_json::json!({
         "username": &app.test_user.username,
         "password": &app.test_user.password
@@ -109,7 +109,7 @@ async fn changing_password_works() {
     let response = app.post_login(&login_body).await;
     assert_is_redirect_to(&response, "/admin/dashboard");
 
-    // Act - Part 2 - Change password
+    // Act - Part 2 - 비밀번호를 변경한다
     let response = app
         .post_change_password(&serde_json::json!({
             "current_password": &app.test_user.password,
@@ -119,19 +119,19 @@ async fn changing_password_works() {
         .await;
     assert_is_redirect_to(&response, "/admin/password");
 
-    // Act - Part 3 - Follow the redirect
+    // Act - Part 3 - 리다이렉트를 따른다
     let html_page = app.get_change_password_html().await;
     assert!(html_page.contains("<p><i>Your password has been changed.</i></p>"));
 
-    // Act - Part 4 - Logout
+    // Act - Part 4 - 로그아웃한다
     let response = app.post_logout().await;
     assert_is_redirect_to(&response, "/login");
 
-    // Act - Part 5 - Follow the redirect
+    // Act - Part 5 - 리다이렉트를 따른다
     let html_page = app.get_login_html().await;
     assert!(html_page.contains("<p><i>You have successfully logged out.</i></p>"));
 
-    // Act - Part 6 - Login using the new password
+    // Act - Part 6 - 새로운 비밀번호를 사용해서 로그인한다
     let login_body = serde_json::json!({
         "username": &app.test_user.username,
         "password": &new_password

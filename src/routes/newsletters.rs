@@ -25,7 +25,7 @@ pub struct Content {
 }
 
 pub fn basic_authentication(headers: &HeaderMap) -> Result<Credentials, anyhow::Error> {
-    // The header value, if present, must be a valid UTF8 string
+    // header 값이 있다면, 모두 유효한 UTF8 문자열이어야 한다
     let header_value = headers
         .get("Authorization")
         .context("The 'Authorization' header was missing")?
