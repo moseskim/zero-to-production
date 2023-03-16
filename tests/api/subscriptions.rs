@@ -46,7 +46,7 @@ async fn subscribe_fails_if_there_is_a_fatal_database_error() {
     // Arrange
     let app = spawn_app().await;
     let body = "name=le%20guin&email=ursula_le_guin%40gmail.com";
-    // Sabotage the database
+    // 데이터베이스를 무시한다
     sqlx::query!("ALTER TABLE subscriptions DROP COLUMN email;",)
         .execute(&app.db_pool)
         .await
@@ -76,7 +76,7 @@ async fn subscribe_sends_a_confirmation_email_for_valid_data() {
     app.post_subscriptions(body.into()).await;
 
     // Assert
-    // Mock asserts on drop
+    // Mock은 드롭 시 어서션한다
 }
 
 #[tokio::test]
@@ -98,7 +98,7 @@ async fn subscribe_sends_a_confirmation_email_with_a_link() {
     let email_request = &app.email_server.received_requests().await.unwrap()[0];
     let confirmation_links = app.get_confirmation_links(email_request);
 
-    // The two links should be identical
+    // 두 링크는 일치해야 한다
     assert_eq!(confirmation_links.html, confirmation_links.plain_text);
 }
 
@@ -120,7 +120,7 @@ async fn subscribe_returns_a_400_when_data_is_missing() {
         assert_eq!(
             400,
             response.status().as_u16(),
-            // Additional customised error message on test failure
+            // 테스트 실패에 대한 추가 커스터마이즈 에러 메시지
             "The API did not fail with 400 Bad Request when the payload was {}.",
             error_message
         );
