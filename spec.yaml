@@ -24,7 +24,7 @@ services:
     instance_count: 1
     # 우선 최소 규모로 운영...
     instance_size_slug: basic-xxs
-\    # 모든 유입 요청은 app으로 라우팅되어야 한다
+    # 모든 유입 요청은 app으로 라우팅되어야 한다
     routes:
       - path: /
     envs:
