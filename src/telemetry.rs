@@ -5,12 +5,12 @@ use tracing_log::LogTracer;
 use tracing_subscriber::fmt::MakeWriter;
 use tracing_subscriber::{layer::SubscriberExt, EnvFilter, Registry};
 
-/// Compose multiple layers into a `tracing`'s subscriber.
+/// 'tracing'의 구독자 안에 여러 레이어를 구성한다.
 ///
-/// # Implementation Notes
+/// # 구현 노트
 ///
-/// We are using `impl Subscriber` as return type to avoid having to spell out the actual
-/// type of the returned subscriber, which is indeed quite complex.
+/// `impl Subscriber`를 반환 타입으로 사용해서 반환되는 subscriber의 실질적인 타입에 대한
+/// 언급을 피한다(매우 복잡하다).
 pub fn get_subscriber<Sink>(
     name: String,
     env_filter: String,
@@ -28,9 +28,9 @@ where
         .with(formatting_layer)
 }
 
-/// Register a subscriber as global default to process span data.
+/// subscriber를 글로벌 디폴트로 등록해서 스팬 데이터를 처리한다.
 ///
-/// It should only be called once!
+/// 한번만 호출되어야 한다!
 pub fn init_subscriber(subscriber: impl Subscriber + Sync + Send) {
     LogTracer::init().expect("Failed to set logger");
     set_global_default(subscriber).expect("Failed to set subscriber");
