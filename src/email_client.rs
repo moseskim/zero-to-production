@@ -93,22 +93,22 @@ mod tests {
         }
     }
 
-    /// Generate a random email subject
+    /// 무작위 이메일 제목을 생성한다
     fn subject() -> String {
         Sentence(1..2).fake()
     }
 
-    /// Generate a random email content
+    /// 무작위 이메일 콘텐츠를 생성한다
     fn content() -> String {
         Paragraph(1..10).fake()
     }
 
-    /// Generate a random subscriber email
+    /// 무작위 구독자 이메일을 생성한다
     fn email() -> SubscriberEmail {
         SubscriberEmail::parse(SafeEmail().fake()).unwrap()
     }
 
-    /// Get a test instance of `EmailClient`.
+    /// `EmailClient` 테스트 인스턴스를 얻는다
     fn email_client(base_url: String) -> EmailClient {
         EmailClient::new(
             base_url,
