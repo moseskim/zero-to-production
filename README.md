@@ -1,42 +1,42 @@
 # Zero To Production In Rust
 
-<div align="center"><a href="https://zero2prod.com" target="_blank"><img src="https://www.zero2prod.com/assets/img/zero2prod.png" width="75%" /></a></div>
+<div align="center"><a href="https://zero2prod.com" target="_blank"><img src="https://www.zero2prod.com/assets/img/zero2prod_banner.webp" /></a></div>
 
-[Zero To Production In Rust](https://zero2prod.com) is an opinionated introduction to backend development using Rust.
+[Zero To Production In Rust](https://zero2prod.com)는 Rust를 사용한 백엔드 개발에 관한 주관적인 소개이다.
 
-This repository serves as supplementary material for [the book](https://zero2prod.com/): it hosts several snapshots of the codebase for our email newsletter project as it evolves throughout the book.
+이 저장소는 [이 책](https://zero2prod.com/)의 보충 자료로 제공된다. 책 전체에서 설명하는 이메일 뉴스레터 프로젝트의 코드 베이스 스냅샷을 담고 있다.
 
-## Chapter snapshots
+## 챕터별 스냅샷
 
-The [`main`](https://github.com/LukeMathWalker/zero-to-production) branch shows the project at the end of the book.
+[`main`](https://github.com/moseskim/zero-to-production) 브랜치는 책 마지막의 프로젝트를 나타낸다.
 
-You can browse the project at the end of previous chapters by switching to their dedicated branches:
+각 장 마지막의 프로젝트는 개별 브랜치를 전환해서 확인할 수 있다:
 
-- [Chapter 3, Part 0](https://github.com/LukeMathWalker/zero-to-production/tree/root-chapter-03-part0)
-- [Chapter 3, Part 1](https://github.com/LukeMathWalker/zero-to-production/tree/root-chapter-03-part1)
-- [Chapter 4](https://github.com/LukeMathWalker/zero-to-production/tree/root-chapter-04)
-- [Chapter 5](https://github.com/LukeMathWalker/zero-to-production/tree/root-chapter-05)
-- [Chapter 6, Part 0](https://github.com/LukeMathWalker/zero-to-production/tree/root-chapter-06-part0)
-- [Chapter 6, Part 1](https://github.com/LukeMathWalker/zero-to-production/tree/root-chapter-06-part1)
-- [Chapter 7, Part 0](https://github.com/LukeMathWalker/zero-to-production/tree/root-chapter-07-part0)
-- [Chapter 7, Part 1](https://github.com/LukeMathWalker/zero-to-production/tree/root-chapter-07-part1)
-- [Chapter 7, Part 2](https://github.com/LukeMathWalker/zero-to-production/tree/root-chapter-07-part2)
-- [Chapter 8](https://github.com/LukeMathWalker/zero-to-production/tree/root-chapter-08)
-- [Chapter 9](https://github.com/LukeMathWalker/zero-to-production/tree/root-chapter-09)
-- [Chapter 10, Part 0](https://github.com/LukeMathWalker/zero-to-production/tree/root-chapter-10-part0)
-- [Chapter 10, Part 1](https://github.com/LukeMathWalker/zero-to-production/tree/root-chapter-10-part1)
-- [Chapter 10, Part 2](https://github.com/LukeMathWalker/zero-to-production/tree/root-chapter-10-part2)
-- [Chapter 10, Part 3](https://github.com/LukeMathWalker/zero-to-production/tree/root-chapter-10-part3)
-- [Chapter 11](https://github.com/LukeMathWalker/zero-to-production/tree/root-chapter-11)
+- [3장, Part 0](https://github.com/moseskim/zero-to-production/tree/root-chapter-03-part0)
+- [3장, Part 1](https://github.com/moseskim/zero-to-production/tree/root-chapter-03-part1)
+- [4장](https://github.com/moseskim/zero-to-production/tree/root-chapter-04)
+- [5장](https://github.com/moseskim/zero-to-production/tree/root-chapter-05)
+- [6장, Part 0](https://github.com/moseskim/zero-to-production/tree/root-chapter-06-part0)
+- [6장, Part 1](https://github.com/moseskim/zero-to-production/tree/root-chapter-06-part1)
+- [7장, Part 0](https://github.com/moseskim/zero-to-production/tree/root-chapter-07-part0)
+- [7장, Part 1](https://github.com/moseskim/zero-to-production/tree/root-chapter-07-part1)
+- [7장, Part 2](https://github.com/moseskim/zero-to-production/tree/root-chapter-07-part2)
+- [8장](https://github.com/moseskim/zero-to-production/tree/root-chapter-08)
+- [9장](https://github.com/moseskim/zero-to-production/tree/root-chapter-09)
+- [10장, Part 0](https://github.com/moseskim/zero-to-production/tree/root-chapter-10-part0)
+- [10장, Part 1](https://github.com/moseskim/zero-to-production/tree/root-chapter-10-part1)
+- [10장, Part 2](https://github.com/moseskim/zero-to-production/tree/root-chapter-10-part2)
+- [10장, Part 3](https://github.com/moseskim/zero-to-production/tree/root-chapter-10-part3)
+- [11장](https://github.com/moseskim/zero-to-production/tree/root-chapter-11)
 
-## Pre-requisites
+## 사전 준비
 
-You'll need to install:
+다음을 설치해야 한다:
 
 - [Rust](https://www.rust-lang.org/tools/install)
 - [Docker](https://docs.docker.com/get-docker/)
 
-There are also some OS-specific requirements.
+다음은 OS별 요구 사항이다.
 
 ### Windows
   
@@ -72,42 +72,41 @@ brew install michaeleisel/zld/zld
 cargo install --version="~0.6" sqlx-cli --no-default-features --features rustls,postgres
 ```
 
-## How to build
+## 빌드 방법
 
-Launch a (migrated) Postgres database via Docker:
+도커를 경유해서 (마이그레이트 된) Postgres 데이터베이스를 기동한다:
 
 ```bash
 ./scripts/init_db.sh
 ```
 
-Launch a Redis instance via Docker:
+도커를 경유해서 Reids 인스턴스를 기동한다:
 
 ```bash
 ./scripts/init_redis.sh
 ```
 
-Launch `cargo`:
+`cargo`를 기동한다:
 
 ```bash
 cargo build
 ```
 
-You can now try with opening a browser on http://127.0.0.1:8000/login after
-having launch the web server with `cargo run`.
+`cargo run`을 사용해서 웹 서버를 기동한 뒤, 브라우저에서 http://127.0.0.1:8000/login에
+접근할 수 있다.
 
-There is a default `admin` account with password
-`everythinghastostartsomewhere`. The available entrypoints are listed in
-[src/startup.rs](https://github.com/LukeMathWalker/zero-to-production/blob/6bd30650cb8670a146819a342ccefd3d73ed5085/src/startup.rs#L92)
+기본 `admin` 계정의 비밀번호는 `everythinghastostartsomewhere`이며, 접근할 수 있는
+엔드포인트들은 [src/startup.rs](https://github.com/moseskim/zero-to-production/blob/6bd30650cb8670a146819a342ccefd3d73ed5085/src/startup.rs#L92)에 리스팅되어 있다.
 
-## How to test
+## 테스트 방법
 
-Launch a (migrated) Postgres database via Docker:
+도커를 경유해서 (마이그레이트 된) Postgres 데이터베이스를 기동한다:
 
 ```bash
 ./scripts/init_db.sh
 ```
 
-Launch a Redis instance via Docker:
+도커를 경유해서 Redis 인스턴스를 기동한다:
 
 ```bash
 ./scripts/init_redis.sh
@@ -118,3 +117,18 @@ Launch `cargo`:
 ```bash
 cargo test 
 ```
+
+## License
+
+<sup>
+Licensed under either of <a href="LICENSE-APACHE">Apache License, Version
+2.0</a> or <a href="LICENSE-MIT">MIT license</a> at your option.
+</sup>
+
+<br>
+
+<sub>
+Unless you explicitly state otherwise, any contribution intentionally submitted
+for inclusion in the work by you, as defined in the Apache-2.0 license, shall be
+dual licensed as above, without any additional terms or conditions.
+</sub>

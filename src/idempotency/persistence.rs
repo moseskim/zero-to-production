@@ -98,7 +98,7 @@ pub async fn save_response(
 
 #[allow(clippy::large_enum_variant)]
 pub enum NextAction {
-    // Return transaction for later usage
+    // 이후 사용을 위해 트랜잭션을 반환한다
     StartProcessing(Transaction<'static, Postgres>),
     ReturnSavedResponse(HttpResponse),
 }
