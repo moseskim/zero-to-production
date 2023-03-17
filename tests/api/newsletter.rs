@@ -49,7 +49,7 @@ async fn newsletters_are_not_delivered_to_unconfirmed_subscribers() {
         .mount(&app.email_server)
         .await;
 
-    // Act - Part 1 - Submit newsletter form
+    // Act - Part 1 - 뉴스레터 폼을 제출한다
     let newsletter_request_body = serde_json::json!({
         "title": "Newsletter title",
         "text_content": "Newsletter body as plain text",
@@ -58,11 +58,11 @@ async fn newsletters_are_not_delivered_to_unconfirmed_subscribers() {
     let response = app.post_publish_newsletter(&newsletter_request_body).await;
     assert_is_redirect_to(&response, "/admin/newsletters");
 
-    // Act - Part 2 - Follow the redirect
+    // Act - Part 2 - 리다이렉트를 따른다
     let html_page = app.get_publish_newsletter_html().await;
     assert!(html_page.contains("<p><i>The newsletter issue has been published!</i></p>"));
-    // Mock verifies on Drop that we haven't sent the newsletter email
-}
+    // Mock은 드롭 시 뉴스레터 이메일을 보내지 않았음을 검증한다
+  }
 
 #[tokio::test]
 async fn newsletters_are_delivered_to_confirmed_subscribers() {
@@ -78,7 +78,7 @@ async fn newsletters_are_delivered_to_confirmed_subscribers() {
         .mount(&app.email_server)
         .await;
 
-    // Act - Part 1 - Submit newsletter form
+    // Act - Part 1 - 뉴스레터 폼을 제출한다
     let newsletter_request_body = serde_json::json!({
         "title": "Newsletter title",
         "text_content": "Newsletter body as plain text",
@@ -87,11 +87,11 @@ async fn newsletters_are_delivered_to_confirmed_subscribers() {
     let response = app.post_publish_newsletter(&newsletter_request_body).await;
     assert_is_redirect_to(&response, "/admin/newsletters");
 
-    // Act - Part 2 - Follow the redirect
+    // Act - Part 2 - 리다이렉트를 따른다
     let html_page = app.get_publish_newsletter_html().await;
     assert!(html_page.contains("<p><i>The newsletter issue has been published!</i></p>"));
-    // Mock verifies on Drop that we have sent the newsletter email
-}
+    // Mock은 드롭 시 뉴스레터 이메일을 보냈음을 검증한다
+  }
 
 #[tokio::test]
 async fn you_must_be_logged_in_to_see_the_newsletter_form() {
