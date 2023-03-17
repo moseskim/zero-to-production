@@ -7,8 +7,8 @@ use wiremock::matchers::{any, method, path};
 use wiremock::{Mock, ResponseTemplate};
 
 async fn create_unconfirmed_subscriber(app: &TestApp) -> ConfirmationLinks {
-    // We are working with multiple subscribers now,
-    // their details must be randomised to avoid conflicts!
+    // 이제 여러 구독자를 다루므로.
+    // 충돌이 발생하지 않도록 세부 정보를 무작위화 해야 한다!
     let name: String = Name().fake();
     let email: String = SafeEmail().fake();
     let body = serde_urlencoded::to_string(&serde_json::json!({
@@ -61,7 +61,7 @@ async fn newsletters_are_not_delivered_to_unconfirmed_subscribers() {
         .mount(&app.email_server)
         .await;
 
-    // Act - Part 1 - Submit newsletter form
+    // Act - Part 1 - 뉴스레터 폼을 제출한다
     let newsletter_request_body = serde_json::json!({
         "title": "Newsletter title",
         "text_content": "Newsletter body as plain text",
@@ -71,15 +71,15 @@ async fn newsletters_are_not_delivered_to_unconfirmed_subscribers() {
     let response = app.post_publish_newsletter(&newsletter_request_body).await;
     assert_is_redirect_to(&response, "/admin/newsletters");
 
-    // Act - Part 2 - Follow the redirect
+    // Act - Part 2 - 리다이렉트를 따른다
     let html_page = app.get_publish_newsletter_html().await;
     assert!(html_page.contains(
         "<p><i>The newsletter issue has been accepted - \
         emails will go out shortly.</i></p>"
     ));
     app.dispatch_all_pending_emails().await;
-    // Mock verifies on Drop that we haven't sent the newsletter email
-}
+    // Mock은 드롭 시 뉴스레터 이메일을 보내지 않았음을 검증한다
+  }
 
 #[tokio::test]
 async fn newsletters_are_delivered_to_confirmed_subscribers() {
@@ -95,7 +95,7 @@ async fn newsletters_are_delivered_to_confirmed_subscribers() {
         .mount(&app.email_server)
         .await;
 
-    // Act - Part 1 - Submit newsletter form
+    // Act - Part 1 - 뉴스레터 폼을 제출한다
     let newsletter_request_body = serde_json::json!({
         "title": "Newsletter title",
         "text_content": "Newsletter body as plain text",
@@ -105,15 +105,15 @@ async fn newsletters_are_delivered_to_confirmed_subscribers() {
     let response = app.post_publish_newsletter(&newsletter_request_body).await;
     assert_is_redirect_to(&response, "/admin/newsletters");
 
-    // Act - Part 2 - Follow the redirect
+    // Act - Part 2 - 리다이렉트를 따른다
     let html_page = app.get_publish_newsletter_html().await;
     assert!(html_page.contains(
         "<p><i>The newsletter issue has been accepted - \
         emails will go out shortly.</i></p>"
     ));
     app.dispatch_all_pending_emails().await;
-    // Mock verifies on Drop that we have sent the newsletter email
-}
+    // Mock은 드롭 시 뉴스레터 이메일을 보냈음을 검증한다
+  }
 
 #[tokio::test]
 async fn you_must_be_logged_in_to_see_the_newsletter_form() {
@@ -159,30 +159,28 @@ async fn newsletter_creation_is_idempotent() {
         .mount(&app.email_server)
         .await;
 
-    // Act - Part 1 - Submit newsletter form
+    // Act - Part 1 - 뉴스레터 폼을 제출한다
     let newsletter_request_body = serde_json::json!({
         "title": "Newsletter title",
         "text_content": "Newsletter body as plain text",
-        "html_content": "<p>Newsletter body as HTML</p>",
-        // We expect the idempotency key as part of the
-        // form data, not as an header
+        // 멱등성 키는 헤더가 아닌 폼 데이터의 일부일 것을 기대한다
         "idempotency_key": uuid::Uuid::new_v4().to_string()
     });
     let response = app.post_publish_newsletter(&newsletter_request_body).await;
     assert_is_redirect_to(&response, "/admin/newsletters");
 
-    // Act - Part 2 - Follow the redirect
+    // Act - Part 2 - 리다이렉트를 따른다
     let html_page = app.get_publish_newsletter_html().await;
     assert!(html_page.contains(
         "<p><i>The newsletter issue has been accepted - \
         emails will go out shortly.</i></p>"
     ));
 
-    // Act - Part 3 - Submit newsletter form **again**
+    // Act - Part 3 - 뉴스레터 폼을 **다시** 제출한다
     let response = app.post_publish_newsletter(&newsletter_request_body).await;
     assert_is_redirect_to(&response, "/admin/newsletters");
 
-    // Act - Part 4 - Follow the redirect
+    // Act - Part 4 - 리다이렉트를 따른다
     let html_page = app.get_publish_newsletter_html().await;
     assert!(html_page.contains(
         "<p><i>The newsletter issue has been accepted - \
@@ -190,8 +188,8 @@ async fn newsletter_creation_is_idempotent() {
     ));
 
     app.dispatch_all_pending_emails().await;
-    // Mock verifies on Drop that we have sent the newsletter email **once**
-}
+    // Mock은 드롭 시 뉴스레터 이메일을 **한번만** 보냈음을 검증한다
+  }
 
 #[tokio::test]
 async fn concurrent_form_submission_is_handled_gracefully() {
@@ -202,14 +200,14 @@ async fn concurrent_form_submission_is_handled_gracefully() {
 
     Mock::given(path("/email"))
         .and(method("POST"))
-        // Setting a long delay to ensure that the second request
-        // arrives before the first one completes
+        // 지연을 길게 설정해서 첫 번째 요청이 완료된 뒤,
+        // 두 번째 요청이 도착하는 것을 보장한다.
         .respond_with(ResponseTemplate::new(200).set_delay(Duration::from_secs(2)))
         .expect(1)
         .mount(&app.email_server)
         .await;
 
-    // Act - Submit two newsletter forms concurrently
+    // Act - 2개의 뉴스레터 폼을 동시에 제출한다
     let newsletter_request_body = serde_json::json!({
         "title": "Newsletter title",
         "text_content": "Newsletter body as plain text",
@@ -226,5 +224,5 @@ async fn concurrent_form_submission_is_handled_gracefully() {
         response2.text().await.unwrap()
     );
     app.dispatch_all_pending_emails().await;
-    // Mock verifies on Drop that we have sent the newsletter email **once**
-}
+    // Mock은 드롭 시 뉴스레터 이메일을 **한번만** 보냈음을 검증한다
+  }

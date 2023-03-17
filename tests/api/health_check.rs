@@ -8,7 +8,7 @@ async fn health_check_works() {
 
     // Act
     let response = client
-        // Use the returned application address
+        // 반환된 애플리케이션 주소를 사용한다
         .get(&format!("{}/health_check", &app.address))
         .send()
         .await
