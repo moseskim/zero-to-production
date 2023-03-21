@@ -62,6 +62,12 @@ brew install michaeleisel/zld/zld
 
 ## 빌드 방법
 
+도커를 통해 (마이그레이트 된) Postgres 데이터베이스를 기동한다:
+
+```bash
+./scripts/init_db.sh
+```
+
 `cargo`를 기동한다:
 
 ```bash
@@ -69,6 +75,12 @@ cargo build
 ```
 
 ## 테스트 방법
+
+도커를 통해 (마이그레이트 된) Posgres 데이터 베이스를 기동한다:
+
+```bash
+./scripts/init_db.sh
+```
 
 `cargo`를 기동한다:
 
